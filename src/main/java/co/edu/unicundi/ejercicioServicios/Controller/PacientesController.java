@@ -28,10 +28,12 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 public class PacientesController {
     private static ArrayList<Paciente> pacientes = new PacientesLogica().obtenerTodoElFichero();
+    private static ArrayList<String> enfer = new ArrayList<>();
     
     @GET
     @Path("pacienteRegistros")
     public ArrayList<Paciente> obtenerPacientes(){
+        //pacientes= new PacientesLogica().obtenerTodoElFichero();
         return pacientes;
     }
     
@@ -89,6 +91,7 @@ public class PacientesController {
                 paciente.setNombre(pacienteNuevosDatos.getNombre());
                 paciente.setApellido(pacienteNuevosDatos.getApellido());
                 paciente.setEdad(pacienteNuevosDatos.getEdad());
+                paciente.setEnfermedades(pacienteNuevosDatos.getEnfermedades());
                 new PacientesLogica().agregarPaciente(pacientes);
                 return "El paciente se actualizo con exito";
             }

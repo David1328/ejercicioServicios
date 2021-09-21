@@ -1,2 +1,2 @@
-10000326806;David;Quintero;20
-1007156806;Alejandra;Sanchez;18
+1234564;David;Quintero;20;Gripita,fiebre,
+123456;David;Quintero;20;Gripita,fiebre,

@@ -28,7 +28,7 @@ public class PacientesLogica {
         prueba.delete();
         String subir="";
         for (Paciente paciente : personaNueva) {
-            subir = subir + paciente.getCedula()+";"+paciente.getNombre()+";"+paciente.getApellido()+";"+paciente.getEdad();
+            subir = subir + paciente.getCedula()+";"+paciente.getNombre()+";"+paciente.getApellido()+";"+paciente.getEdad()+";"+enfermedades(paciente.getEnfermedades());
             subir = subir +"\n";
         }
         try {
@@ -51,14 +51,30 @@ public class PacientesLogica {
             BufferedReader base = new BufferedReader(new FileReader(fichero));
             while ((bfReader = base.readLine()) != null) {
                 String[] partes;
+                String[] partesEnfermedad;
+                ArrayList<String> enfermedadPaciente = new ArrayList<>();
+                partesEnfermedad = bfReader.split(",");
                 partes = bfReader.split(";");
-                pacientes.add(new Paciente(partes[0],partes[1],partes[2],Integer.parseInt(partes[3])));        
+                System.out.println("enfermedad"+partesEnfermedad[0]);
+                for (String enfermedad : partesEnfermedad) {
+                    if(enfermedad!=partesEnfermedad[0]){
+                        enfermedadPaciente.add(enfermedad);
+                    }
+                }
+                pacientes.add(new Paciente(partes[0],partes[1],partes[2],Integer.parseInt(partes[3]),enfermedadPaciente));        
             }
             base.close();
         } catch (Exception e) {
             System.out.println("Fichero no encontrado");
         }
         return pacientes;
+    }
+    public String enfermedades(ArrayList<String> enfermedad){
+        String enfermedadPaciente = "";
+        for (String padecimiento : enfermedad) {
+           enfermedadPaciente += padecimiento+",";
+        }
+        return enfermedadPaciente;
     }
     
 }
