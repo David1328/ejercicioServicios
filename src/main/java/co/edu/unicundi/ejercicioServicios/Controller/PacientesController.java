@@ -8,6 +8,12 @@ package co.edu.unicundi.ejercicioServicios.Controller;
 import co.edu.unicundi.ejemploservidor.BaseDeDatos.PacientesLogica;
 import co.edu.unicundi.ejemploservidor.Dato.Paciente;
 import java.util.ArrayList;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 
 /**
@@ -27,8 +34,9 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class PacientesController {
-    private static ArrayList<Paciente> pacientes = new PacientesLogica().obtenerTodoElFichero();
-    private static ArrayList<String> enfer = new ArrayList<>();
+    private static final ArrayList<Paciente> pacientes = new PacientesLogica().obtenerTodoElFichero();
+    private static final ArrayList<String> enfer = new ArrayList<>();
+    
     
     @GET
     @Path("pacienteRegistros")
@@ -38,54 +46,59 @@ public class PacientesController {
     }
     
     @GET
+    @Valid
     @Path("obtenerPaciente/{cedula}")
-    public Paciente obtenerPaciente(@PathParam("cedula") String cedula){
+    public Response obtenerPaciente(@NotNull @Size(min=2, max=30) @Pattern(regexp="^([0-9])*$") @PathParam("cedula") String cedula){
         Paciente persona = new Paciente();
         //pacientes = new PacientesLogica().obtenerTodoElFichero();
         for (Paciente paciente : pacientes) {
             if(paciente.getCedula().equals(cedula)){
                 persona = paciente;
-                break;
+                return Response.status(Response.Status.OK).entity(persona).build();
+                //break;
             }
         }
-        return persona;
+        return Response.status(Response.Status.NOT_FOUND).entity("Usuario no encontrado").build();
+        //return persona;
     }
     
     @POST
+    @Valid
     @Path("agregarPaciente")
-    public String agregarPaciente(Paciente pacieteNuevo){
+    public Response agregarPaciente(@Valid Paciente pacieteNuevo){
         boolean bandera = false;
         for (Paciente paciente : pacientes) {
             if(paciente.getCedula().equals(pacieteNuevo.getCedula())){
-                bandera = true;
-                break;
+                return Response.status(Response.Status.CONFLICT).entity("Ya existe").build();
+                //bandera = true;
+                //break;
             }
         }
-        if(!bandera){
-            pacientes.add(pacieteNuevo);
-            new PacientesLogica().agregarPaciente(pacientes);
-            return "Agregado con exito";
-        }else{
-            return "Ya existe";
-        }
+        pacientes.add(pacieteNuevo);
+        new PacientesLogica().agregarPaciente(pacientes);
+        return Response.status(Response.Status.CREATED).entity("Agregado con exitos").build();
     }
     
     @DELETE 
+    @Valid
     @Path("eliminarPaciente/{cedula}")
-    public String eliminarPaciente(@PathParam("cedula") String cedula){
+    public Response eliminarPaciente(@NotNull @Size(min=2, max=30) @Pattern(regexp="^([0-9])*$") @PathParam("cedula") String cedula){
         for (Paciente paciente : pacientes) {
             if(paciente.getCedula().equals(cedula)){
                 pacientes.remove(paciente);
                 new PacientesLogica().agregarPaciente(pacientes);
-                return "Se elimino el paciente con de numero cedula "+cedula;
+                return Response.noContent().entity("Se elimino el paciente con de numero cedula "+cedula).build();
+                //return "Se elimino el paciente con de numero cedula "+cedula;
             }
         }
-        return "No se encontro el paciente con cedula "+cedula;
+        return Response.status(Response.Status.NOT_FOUND).entity("Usuario no encontrado, cedula: "+cedula).build();
+        //return "No se encontro el paciente con cedula "+cedula;
     }
     
     @PUT
+    @Valid
     @Path("actualizarPaciente")
-    public String actualizarPaciente(Paciente pacienteNuevosDatos){
+    public Response actualizarPaciente(@Valid Paciente pacienteNuevosDatos){
         for (Paciente paciente : pacientes) {
             if(paciente.getCedula().equals(pacienteNuevosDatos.getCedula())){
                 paciente.setNombre(pacienteNuevosDatos.getNombre());
@@ -93,10 +106,12 @@ public class PacientesController {
                 paciente.setEdad(pacienteNuevosDatos.getEdad());
                 paciente.setEnfermedades(pacienteNuevosDatos.getEnfermedades());
                 new PacientesLogica().agregarPaciente(pacientes);
-                return "El paciente se actualizo con exito";
+                return Response.ok().entity("El paciente se actualizo con exito").build();
+                //return "El paciente se actualizo con exito";
             }
         }
-        return "El paciente no existe para actualizar datos";
+        return Response.status(Response.Status.BAD_REQUEST).entity("El paciente no existe para actualizar datos").build();
+        //return "El paciente no existe para actualizar datos";
     }
     
 }

@@ -20,22 +20,20 @@ import java.util.ArrayList;
  */
 public class PacientesLogica {
     
-    private static ArrayList<Paciente> pacientes = new ArrayList<>();
-    private static String fichero = "C:\\Users\\David\\Desktop\\Ingenieria de sistemas\\Linea de profundizacion 2\\ejercicioServicios\\src"+File.separator+"pacientes.txt";
+    private static final ArrayList<Paciente> pacientes = new ArrayList<>();
+    private static final String fichero = "C:\\Users\\David\\Desktop\\Ingenieria de sistemas\\Linea de profundizacion 2\\ejercicioServicios\\src"+File.separator+"pacientes.txt";
     
     public void agregarPaciente(ArrayList<Paciente> personaNueva){
         File prueba = new File(fichero);
         prueba.delete();
         String subir="";
         for (Paciente paciente : personaNueva) {
-            subir = subir + paciente.getCedula()+";"+paciente.getNombre()+";"+paciente.getApellido()+";"+paciente.getEdad()+";"+enfermedades(paciente.getEnfermedades());
+            subir = subir + paciente.getCedula()+";"+paciente.getNombre()+";"+paciente.getApellido()+";"+paciente.getEdad()+";,"+enfermedades(paciente.getEnfermedades());
             subir = subir +"\n";
         }
         try {
             FileWriter archivo = new FileWriter(fichero, true);
-            //String subir;
             try(BufferedWriter almacen  = new BufferedWriter(archivo)){
-                //subir = personaNueva.getCedula()+";"+personaNueva.getNombre()+";"+personaNueva.getApellido()+";"+personaNueva.getEdad();
                 almacen.write(subir);
                 almacen.close();
             }
