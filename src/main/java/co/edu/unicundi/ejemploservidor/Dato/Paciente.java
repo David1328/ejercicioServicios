@@ -18,21 +18,38 @@ import javax.validation.constraints.Size;
  */
 public class Paciente {
     
-    //Validacion para que la cedula no llegue nula
-    //Y que el String tenga solo numeros
-    @NotNull @Size(min=4, max=12)
+    /**
+     * Validacion para que la cedula no llegue nula
+     * Y que el String tenga solo numeros
+     * @since 6 a 10 
+     */
+    @NotNull @Size(min=6, max=10)
     @Pattern(regexp="^([0-9])*$")
     private String cedula;
-    //Valida que el nombre tenga un tamaño y no llegue nulo
+    
+    /**
+     * Valida que el nombre tenga un tamaño y no llegue nulo
+     * @since 3 a 11
+     */
     @NotNull @Size(min = 3 ,max =11)
     private String nombre;
-    //Valida que el apellido tenga un tamaño y no llegue nulo
+    
+    /**
+     * Valida que el apellido tenga un tamaño y no llegue nulo
+     * @since 3 a 10
+     */
     @NotNull @Size(min = 3, max = 10)
     private String apellido;
-    //Valida que la edad que se ingrese sea min de 2 y max de 85
+    
+    /**
+     * Valida que la edad que se ingrese sea min de 2 y max de 85
+     */
     @NotNull @Min(2) @Max(85)
     private int edad;
-    //Valida que el arreglo tenga min un elemento
+    
+    /**
+     * Valida que el arreglo tenga min un elemento
+     */
     @NotNull @Size(min=1, max=12)
     private ArrayList<String> enfermedades = new ArrayList<>();
 
@@ -40,7 +57,15 @@ public class Paciente {
     public Paciente() {
     }
     
-    //Constructor sobre cargado con el arraylis de enfermedades
+    /**
+     * 
+     * Constructor sobre cargado con el arraylis de enfermedades
+     * @param cedula
+     * @param nombre
+     * @param apellido
+     * @param edad
+     * @param padecimiento 
+     */
     public Paciente(String cedula, String nombre, String apellido, int edad, ArrayList<String> padecimiento) {
         this.cedula = cedula;
         this.nombre = nombre;
@@ -48,7 +73,14 @@ public class Paciente {
         this.edad = edad;
         this.enfermedades= padecimiento;
     }
-    //Constructor sobre cargado sin el arraylis de enfermedades
+    /**
+     * 
+     * Constructor sobre cargado sin el arraylis de enfermedades
+     * @param cedula
+     * @param nombre
+     * @param apellido
+     * @param edad 
+     */
     public Paciente(String cedula, String nombre, String apellido, int edad) {
         this.cedula = cedula;
         this.nombre = nombre;

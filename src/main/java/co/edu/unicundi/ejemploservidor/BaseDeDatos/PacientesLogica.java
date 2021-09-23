@@ -25,8 +25,9 @@ public class PacientesLogica {
     //String que tiene con el fin que tenga quemada la dirección del fichero
     private static final String fichero = "C:\\Users\\David\\Desktop\\Ingenieria de sistemas\\Linea de profundizacion 2\\ejercicioServicios\\src"+File.separator+"pacientes.txt";
     
-    /*
-    Metodo para crear de nuevo el fichero y agregar el array que viene desde el servicios
+    /**
+    * Metodo para crear de nuevo el fichero y agregar el array que viene desde el servicios
+    * @param personaNueva para poder agragar la nueva lista para actualizar el fichero
     */
     public void agregarPaciente(ArrayList<Paciente> personaNueva){
         //Elimina el fichero 
@@ -53,6 +54,10 @@ public class PacientesLogica {
          } 
     }
     
+    /**
+     * Metodo que permite retornar lo que se encuentra en el fichero
+     * @return retorna la lista que se lleno apartir del fichero
+     */
     public ArrayList<Paciente> obtenerTodoElFichero(){
         try {
             String bfReader;
@@ -80,7 +85,13 @@ public class PacientesLogica {
         }
         return pacientes;
     }
-    //Metodo para separar el array List de enfermedades por medio de comas
+    /**
+     * 
+     * Metodo para separar el array List de enfermedades por medio de comas
+     * 
+     * @param enfermedad la lista de enfermedades para separar por comas
+     * @return el resultado de concatenar por comas del array
+     */
     public String enfermedades(ArrayList<String> enfermedad){
         String enfermedadPaciente = "";
         for (String padecimiento : enfermedad) {
