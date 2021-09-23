@@ -9,8 +9,6 @@ import co.edu.unicundi.ejemploservidor.BaseDeDatos.PacientesLogica;
 import co.edu.unicundi.ejemploservidor.Dato.Paciente;
 import java.util.ArrayList;
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -35,22 +33,26 @@ import javax.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 public class PacientesController {
     private static final ArrayList<Paciente> pacientes = new PacientesLogica().obtenerTodoElFichero();
-    private static final ArrayList<String> enfer = new ArrayList<>();
     
-    
+    /*
+    Servicio que obtiene todos los pacientes
+    que existen en el fichero
+    */
     @GET
     @Path("pacienteRegistros")
     public ArrayList<Paciente> obtenerPacientes(){
-        //pacientes= new PacientesLogica().obtenerTodoElFichero();
         return pacientes;
     }
-    
+    /*
+    Servicio que obtiene el paciente por cedula
+    Con una vaidacion de min 2 max 30 caracteres
+    Donde solo se admiten numeros en el String
+    */
     @GET
     @Valid
     @Path("obtenerPaciente/{cedula}")
     public Response obtenerPaciente(@NotNull @Size(min=2, max=30) @Pattern(regexp="^([0-9])*$") @PathParam("cedula") String cedula){
         Paciente persona = new Paciente();
-        //pacientes = new PacientesLogica().obtenerTodoElFichero();
         for (Paciente paciente : pacientes) {
             if(paciente.getCedula().equals(cedula)){
                 persona = paciente;
@@ -62,23 +64,28 @@ public class PacientesController {
         //return persona;
     }
     
+    /*
+    Servicios recibe el paciente a agregar
+    Con validaciones que se hicieron el pojo
+    */
     @POST
     @Valid
     @Path("agregarPaciente")
     public Response agregarPaciente(@Valid Paciente pacieteNuevo){
-        boolean bandera = false;
         for (Paciente paciente : pacientes) {
             if(paciente.getCedula().equals(pacieteNuevo.getCedula())){
                 return Response.status(Response.Status.CONFLICT).entity("Ya existe").build();
-                //bandera = true;
-                //break;
             }
         }
         pacientes.add(pacieteNuevo);
         new PacientesLogica().agregarPaciente(pacientes);
-        return Response.status(Response.Status.CREATED).entity("Agregado con exitos").build();
+        return Response.status(Response.Status.CREATED).entity("Agregado con exito").build();
     }
-    
+    /*
+    Servicio que elimina el paciente por cedula
+    Con una vaidacion de min 2 max 30 caracteres
+    Donde solo se admiten numeros en el String
+    */
     @DELETE 
     @Valid
     @Path("eliminarPaciente/{cedula}")
@@ -88,13 +95,15 @@ public class PacientesController {
                 pacientes.remove(paciente);
                 new PacientesLogica().agregarPaciente(pacientes);
                 return Response.noContent().entity("Se elimino el paciente con de numero cedula "+cedula).build();
-                //return "Se elimino el paciente con de numero cedula "+cedula;
             }
         }
         return Response.status(Response.Status.NOT_FOUND).entity("Usuario no encontrado, cedula: "+cedula).build();
-        //return "No se encontro el paciente con cedula "+cedula;
     }
     
+    /*
+    Servicios recibe el paciente a actualizar
+    Con validaciones que se hicieron el pojo
+    */
     @PUT
     @Valid
     @Path("actualizarPaciente")
@@ -107,11 +116,9 @@ public class PacientesController {
                 paciente.setEnfermedades(pacienteNuevosDatos.getEnfermedades());
                 new PacientesLogica().agregarPaciente(pacientes);
                 return Response.ok().entity("El paciente se actualizo con exito").build();
-                //return "El paciente se actualizo con exito";
             }
         }
-        return Response.status(Response.Status.BAD_REQUEST).entity("El paciente no existe para actualizar datos").build();
-        //return "El paciente no existe para actualizar datos";
+        return Response.status(Response.Status.NOT_FOUND).entity("El paciente no existe para actualizar datos").build();
     }
     
 }
